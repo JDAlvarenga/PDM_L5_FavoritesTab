@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
         //
         public void setFavorite(ImageButton ibutton, boolean isFavorite) {
-            ibutton.setImageResource((isFavorite? R.color.colorPrimaryDark : R.color.colorAccent));
+            ibutton.setImageResource((isFavorite? R.drawable.favicon_color : R.drawable.favicon));
         }
     }
 
