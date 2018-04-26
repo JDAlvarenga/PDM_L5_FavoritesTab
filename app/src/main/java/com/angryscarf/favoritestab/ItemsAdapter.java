@@ -15,10 +15,67 @@ import java.util.ArrayList;
  * Created by Jaime on 4/25/2018.
  */
 
-public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder> {
+public abstract class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder> {
     private Context appcontext;
     private ArrayList<Item> items;
     private ArrayList<Item> favItems;
+
+
+
+    public ItemsAdapter(Context appcontext, ArrayList<Item> items, ArrayList<Item> favItems) {
+        this.appcontext = appcontext;
+        this.items = items;
+        this.favItems = favItems;
+
+    }
+
+    @Override
+    public ItemsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_cardview, parent, false);
+        return (new ItemsViewHolder(v));
+    }
+
+
+    @Override
+    public void onBindViewHolder(ItemsViewHolder holder, final int position) {
+
+        Item it = items.get(position);
+        holder.title.setText(it.getName());
+        holder.subtitle.setText(it.getDescription());
+
+        setIsFavorite(holder.favorite, favItems.contains(it));
+
+        holder.favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleFavorite(view, position);
+
+            }
+        });
+
+
+    }
+
+    /**
+     * Called when the favorite {@link ImageButton} on the list is clicked.
+     * @param view The reference to the clicked ImageButton
+     * @param pos The position (index) of the clicked item.
+    */
+    public abstract void toggleFavorite(View view, int pos);
+
+    /**
+     * Change the layout of the button or other visual changes if the item is marked as favorite
+     * This method should be called in the implementation of toggleFavorite on {@link com.angryscarf.favoritestab.ItemsAdapter, this adapter}
+     * @param iButton Reference to the button
+     * @param isFavorite Tells if is marked as favorite
+     */
+    public abstract void setIsFavorite(ImageButton iButton, boolean isFavorite);
+
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
+
 
     public static class ItemsViewHolder extends RecyclerView.ViewHolder {
         CardView card;
@@ -36,38 +93,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHol
 
 
         }
-    }
 
-    public ItemsAdapter(Context appcontext, ArrayList<Item> items, ArrayList<Item> favItems) {
-        this.appcontext = appcontext;
-        this.items = items;
-        this.favItems = favItems;
-    }
-
-    @Override
-    public ItemsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_cardview, parent, false);
-        return (new ItemsViewHolder(v));
-    }
-
-    //TODO: Add listener to image button to add/remove from favorites (abstract)
-    @Override
-    public void onBindViewHolder(ItemsViewHolder holder, int position) {
-        Item it = items.get(position);
-        holder.title.setText(it.getName());
-        holder.subtitle.setText(it.getDescription());
-
-        holder.favorite.setImageResource(
-
-            (favItems.contains(it)? R.color.colorPrimaryDark : R.color.colorAccent)
-        );
-
-
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return items.size();
     }
 }

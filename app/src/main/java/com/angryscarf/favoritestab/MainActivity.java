@@ -1,8 +1,6 @@
 package com.angryscarf.favoritestab;
 
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,12 +12,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
+
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.TextView;
+import android.widget.ImageButton;
 
 import java.util.ArrayList;
 
@@ -79,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         private static ArrayList<Item> itms, favs;
+        private static ItemsAdapter itmsAdapter, favsAdapter;
 
         public PlaceholderFragment() {
         }
@@ -90,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         public static PlaceholderFragment newInstance(int sectionNumber, ArrayList<Item> itm, ArrayList<Item> fav) {
             itms = itm;
             favs = fav;
+
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -108,13 +107,66 @@ public class MainActivity extends AppCompatActivity {
             LinearLayoutManager lManager = new LinearLayoutManager(this.getActivity());
             rv.setLayoutManager(lManager);
 
-            //TODO: Switch/send different items to each tab fragment
-            ItemsAdapter adapter = new ItemsAdapter(this.getContext().getApplicationContext(),itms, favs);
+            //Switch/send different items to each tab fragment
+            ItemsAdapter adapter;
+            switch(getArguments().getInt(ARG_SECTION_NUMBER)) {
+                case 1:
+                    adapter = new ItemsAdapter(this.getContext().getApplicationContext(),itms, favs) {
+                        @Override
+                        public void toggleFavorite(View view, int pos) {
+                            Item item = itms.get(pos);
+                            if(favs.contains(item)) {
+                                favs.remove(item);
+                                favsAdapter.notifyItemRemoved(favs.indexOf(item));
+                                favsAdapter.notifyItemRangeChanged(favs.indexOf(item), favs.size()+1);
+                                setIsFavorite((ImageButton) view, false);
+                            }
+                            else {
+                                favs.add(item);
+                                favsAdapter.notifyItemInserted(favs.size());
+                                //favsAdapter.notifyItemRangeChanged(0, favs.size());
+
+                                setIsFavorite((ImageButton) view, true);
+
+                            }
+
+                        }
+
+                        @Override
+                        public void setIsFavorite(ImageButton iButton, boolean isFavorite) {
+                            setFavorite(iButton, isFavorite);
+                        }
+                    };
+                    this.itmsAdapter = adapter;
+                    break;
+
+
+                case 2:
+                    adapter = new ItemsAdapter(this.getContext().getApplicationContext(),favs, favs) {
+                        @Override
+                        public void toggleFavorite(View view, int pos) {
+
+                        }
+                        @Override
+                        public void setIsFavorite(ImageButton iButton, boolean isFavorite) {
+                            setFavorite(iButton, isFavorite);
+                        }
+                    };
+                    this.favsAdapter = adapter;
+                    break;
+                default:
+                    adapter = null;
+            }
             rv.setAdapter(adapter);
 
             //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
+        }
+
+        //
+        public void setFavorite(ImageButton ibutton, boolean isFavorite) {
+            ibutton.setImageResource((isFavorite? R.color.colorPrimaryDark : R.color.colorAccent));
         }
     }
 
