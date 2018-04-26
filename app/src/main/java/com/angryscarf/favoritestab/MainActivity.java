@@ -19,7 +19,11 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
+
+    ArrayList<Item> items, favorites;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -58,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    
+
 
     /**
      * A placeholder fragment containing a simple view.
@@ -85,12 +89,16 @@ public class MainActivity extends AppCompatActivity {
             return fragment;
         }
 
+        //TODO: modify initial values on create
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+
+
+            
+            //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+            //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
         }
     }
@@ -114,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
+            // Show 2 total pages.
             return 2;
         }
     }
