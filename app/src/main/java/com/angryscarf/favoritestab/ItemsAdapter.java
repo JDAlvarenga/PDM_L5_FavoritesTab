@@ -19,6 +19,7 @@ public abstract class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.Ite
     private Context appcontext;
     private ArrayList<Item> items;
     private ArrayList<Item> favItems;
+    public ArrayList<ItemsViewHolder> holders;
 
 
 
@@ -26,25 +27,28 @@ public abstract class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.Ite
         this.appcontext = appcontext;
         this.items = items;
         this.favItems = favItems;
+        this.holders = new ArrayList<>();
 
     }
 
     @Override
     public ItemsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_cardview, parent, false);
-        return (new ItemsViewHolder(v));
+        ItemsViewHolder ivh = new ItemsViewHolder(v);
+
+        return ivh;
     }
 
 
     @Override
     public void onBindViewHolder(ItemsViewHolder holder, final int position) {
+        holders.add(holder);
 
         Item it = items.get(position);
         holder.title.setText(it.getName());
         holder.subtitle.setText(it.getDescription());
 
         setIsFavorite(holder.favorite, favItems.contains(it));
-
         holder.favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

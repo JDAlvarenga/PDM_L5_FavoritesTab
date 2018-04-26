@@ -117,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
                             Item item = itms.get(pos);
                             if(favs.contains(item)) {
                                 favs.remove(item);
+                                favsAdapter.holders.remove(favs.indexOf(item));
+
                                 favsAdapter.notifyItemRemoved(favs.indexOf(item));
                                 favsAdapter.notifyItemRangeChanged(favs.indexOf(item), favs.size()+1);
                                 setIsFavorite((ImageButton) view, false);
@@ -124,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                             else {
                                 favs.add(item);
                                 favsAdapter.notifyItemInserted(favs.size());
-                                //favsAdapter.notifyItemRangeChanged(0, favs.size());
+
 
                                 setIsFavorite((ImageButton) view, true);
 
@@ -145,7 +147,17 @@ public class MainActivity extends AppCompatActivity {
                     adapter = new ItemsAdapter(this.getContext().getApplicationContext(),favs, favs) {
                         @Override
                         public void toggleFavorite(View view, int pos) {
+                            Item item = favs.get(pos);
+                            favs.remove(item);
+                            favsAdapter.holders.remove(pos);
 
+
+                            favsAdapter.notifyItemRemoved(pos);
+                            favsAdapter.notifyItemRangeChanged(pos, favs.size()+1);
+
+                            setIsFavorite(itmsAdapter.holders.get(
+                                    itms.indexOf(item)
+                            ).favorite, false);
                         }
                         @Override
                         public void setIsFavorite(ImageButton iButton, boolean isFavorite) {
