@@ -1,5 +1,6 @@
 package com.angryscarf.favoritestab;
 
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
  */
 
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder> {
+    private Context appcontext;
     private ArrayList<Item> items;
     private ArrayList<Item> favItems;
 
@@ -36,7 +38,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHol
         }
     }
 
-    public ItemsAdapter(ArrayList<Item> items, ArrayList<Item> favItems) {
+    public ItemsAdapter(Context appcontext, ArrayList<Item> items, ArrayList<Item> favItems) {
+        this.appcontext = appcontext;
         this.items = items;
         this.favItems = favItems;
     }
@@ -47,15 +50,19 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHol
         return (new ItemsViewHolder(v));
     }
 
-    //TODO: Add listener to image button to addd/remove from favorites (abstract)
+    //TODO: Add listener to image button to add/remove from favorites (abstract)
     @Override
     public void onBindViewHolder(ItemsViewHolder holder, int position) {
         Item it = items.get(position);
         holder.title.setText(it.getName());
         holder.subtitle.setText(it.getDescription());
+
         holder.favorite.setImageResource(
-                favItems.contains(it)? R.drawable.ic_launcher_foreground : R.drawable.ic_launcher_background
+
+            (favItems.contains(it)? R.color.colorPrimaryDark : R.color.colorAccent)
         );
+
+
 
     }
 

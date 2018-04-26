@@ -4,6 +4,8 @@ import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -45,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        loadItems();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -74,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
+        private static ArrayList<Item> itms, favs;
+
         public PlaceholderFragment() {
         }
 
@@ -81,7 +87,9 @@ public class MainActivity extends AppCompatActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
+        public static PlaceholderFragment newInstance(int sectionNumber, ArrayList<Item> itm, ArrayList<Item> fav) {
+            itms = itm;
+            favs = fav;
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -89,14 +97,21 @@ public class MainActivity extends AppCompatActivity {
             return fragment;
         }
 
-        //TODO: modify initial values on create
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+            RecyclerView rv = rootView.findViewById(R.id.recycler);
+            rv.setHasFixedSize(true);//Might need to change this if going to add to favorites
 
-            
+            LinearLayoutManager lManager = new LinearLayoutManager(this.getActivity());
+            rv.setLayoutManager(lManager);
+
+            //TODO: Switch/send different items to each tab fragment
+            ItemsAdapter adapter = new ItemsAdapter(this.getContext().getApplicationContext(),itms, favs);
+            rv.setAdapter(adapter);
+
             //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
@@ -117,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            return PlaceholderFragment.newInstance(position + 1, items, favorites);
         }
 
         @Override
@@ -125,5 +140,18 @@ public class MainActivity extends AppCompatActivity {
             // Show 2 total pages.
             return 2;
         }
+    }
+
+    public void loadItems() {
+        items = new ArrayList<>();
+        favorites = new ArrayList<>();
+
+        items.add(new Item("Sleep", "Sleeping on a rainy day"));
+        items.add(new Item("Eat", "Eating your  favorite food"));
+        items.add(new Item("Notebook", "Doing the useless physics notebook"));
+
+        favorites.add(items.get(0));
+        favorites.add(items.get(1));
+
     }
 }
