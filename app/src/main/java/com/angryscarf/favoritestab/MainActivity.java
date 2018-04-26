@@ -115,12 +115,13 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void toggleFavorite(View view, int pos) {
                             Item item = itms.get(pos);
+                            int favIndex = favs.indexOf(item);
                             if(favs.contains(item)) {
                                 favs.remove(item);
-                                favsAdapter.holders.remove(favs.indexOf(item));
+                                favsAdapter.holders.remove(favIndex);
 
-                                favsAdapter.notifyItemRemoved(favs.indexOf(item));
-                                favsAdapter.notifyItemRangeChanged(favs.indexOf(item), favs.size()+1);
+                                favsAdapter.notifyItemRemoved(favIndex);
+                                favsAdapter.notifyItemRangeChanged(favIndex, favs.size()+1);
                                 setIsFavorite((ImageButton) view, false);
                             }
                             else {
